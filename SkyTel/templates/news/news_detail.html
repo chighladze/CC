@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block news %}
+
+
+<div class="app-body">
+    <main class="main pt-4 pb-5">
+        <div class="container-fluid">
+            <div class="card border-secondary">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-8" style="margin: auto;">
+
+                            {% for item in item %}
+                            <div class="card">
+                                <div class="card-header position-relative" style="background: #F1F1F1;">
+                                    <div class="text-center">
+                                        <div class="font-xl"><h4>{{ item.title }}</h4></h3></div>
+                                        <span class="date font-sm">
+                                                 <i class="icon-calendar"></i>
+                                                 {{ item.update_date|date:"j F Y H:m" }}
+                                             </span>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <p>
+                                        {{ item.content }}
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{% url 'news' %}"
+                                       class="btn btn-primary">
+                                        Go Back
+                                    </a>
+                                    <div class="float-right d-flex">
+                                        <a href="#" class="btn btn-secondary mr-2">
+                                            <i class="fa fa-pencil font-lg"></i>Edit</a>
+                                        <form action="/news/" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="_method" value="{{ item.pk }}">
+                                            <button class="btn btn-danger delete">
+                                                Delete
+                                            </button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    {% comment %}
+                    <ul class="pagination" role="navigation">
+
+                        <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; წინა">
+                            <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                        </li>
+
+
+                        <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+                        <li class="page-item"><a class="page-link" href="https://cc.skytel.ge/desk/news?page=2">2</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="https://cc.skytel.ge/desk/news?page=3">3</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="https://cc.skytel.ge/desk/news?page=4">4</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="https://cc.skytel.ge/desk/news?page=5">5</a>
+                        </li>
+
+
+                        <li class="page-item">
+                            <a class="page-link" href="https://cc.skytel.ge/desk/news?page=2" rel="next"
+                               aria-label="next &raquo;">&rsaquo;</a>
+                        </li>
+                    </ul>
+                    {% endcomment %}
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+{% endblock %}
+

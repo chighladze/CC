@@ -1,0 +1,1376 @@
+{% extends 'base.html' %}
+
+{% block monthly_st_desk %}
+
+
+<main class="main pt-4 pb-5">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+
+            <div class="card-body compact">
+                <div class="d-flex justify-content-between mb-2">
+                    <div class="d-flex">
+
+                        {% comment %}
+                        <div class="controls mr-2">
+                            <div class="btn-group">
+                                <form action="{% url 'monthly_st_desk' %}" method="GET">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <button type="submit" class="fc-prev-button btn btn-primary mr-1"
+                                            aria-label="prev"
+                                            data-balloon="წინა თვე" data-balloon-pos="up">
+                                        <span class="fa fa-chevron-left"></span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'monthly_st_desk' %}" method="GET">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <button type="submit" class="fc-next-button btn btn-primary"
+                                            aria-label="next"
+                                            data-balloon="შემდეგი თვე" data-balloon-pos="up">
+                                        <span class="fa fa-chevron-right"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endcomment %}
+
+                        <div class="controls">
+                            <form action="{% url 'monthly_st_desk' %}" method="get">
+                                <div class="d-flex">
+                                    <div class="form-group mr-2">
+                                        <select class="form-control" id="year-filter" name="year">
+                                            <option selected value="{{ year }}">{{ year }}</option>
+                                            {% for item in year_filter %}
+                                            <option value="{{ item }}">{{ item }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="btn btn-success" type="submit" value="Filter">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {% comment %}
+                    <div class="d-flex">
+                        <div class="controls mr-4">
+                            <div class="btn-group">
+                                <form action="{% url 'monthly_st_desk' %}" method="GET">
+                                    <input type="hidden" name="year" value="2020">
+                                    <button type="submit" class="fc-prev-button btn btn-primary"
+                                            aria-label="prev"
+                                            data-balloon="წინა თვე" data-balloon-pos="up">
+                                        <span class="fa fa-chevron-left"></span>
+                                    </button>
+                                </form>
+                                <form action="{% url 'monthly_st_desk' %}" method="GET">
+                                    <input type="hidden" name="year" value="2022">
+                                    <button type="submit" class="fc-next-button btn btn-primary"
+                                            aria-label="next"
+                                            data-balloon="შემდეგი თვე" data-balloon-pos="up">
+                                        <span class="fa fa-chevron-right"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div class="form-group">
+                                <input class="form-control date-indicator" type="text" value="2021" disabled
+                                       size="1">
+                            </div>
+                        </div>
+                    </div>
+                    {% endcomment %}
+
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Monthly
+                    </div>
+                    <div class="card-body">
+
+                            <div class="table-responsive mb-3">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                <tr class="text-center font-sm">
+                                    <th scope="col">Category</th>
+                                    {% for item in tt_calls %}
+                                    <th scope="col">{{ item.month }}</th>
+                                    {% endfor %}
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text text-dark">Total Calls:</td>
+                                    {% for item in tt_calls %}
+                                    <td class="text-center text-dark">{{ item.total_calls }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Answered calls:</td>
+                                    {% for item in tt_calls %}
+                                    <td class="text-center text-dark">{{ item.answered_calls }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Service level:</td>
+                                    {% for item in tt_calls %}
+                                    <td class="text-center text-dark">{{ item.service_level }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Abandonment rate:</td>
+                                    {% for item in tt_calls %}
+                                    <td class="text-center text-dark">{{ item.abandonment_rate }}</td>
+                                    {% endfor %}
+                                </tr>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Response time:</td>
+                                    {% for item in tt_calls %}
+                                    <td class="text-center text-dark">{{ item.response_time }}</td>
+                                    {% endfor %}
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="chart-container position-relative">
+                            <canvas id="monthlyChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Calls By Week</div>
+                    <div class="card-body d-flex justify-content-between">
+                        <div class="table-responsive w-35">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                <tr class="text-center font-sm">
+                                    <th scope="col">Week Day</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text text-dark" width="25%">Monday</td>
+                                    <td class="text-center text-dark">1704</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Tuesday</td>
+                                    <td class="text-center text-dark">2072</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Wednesday</td>
+                                    <td class="text-center text-dark">1774</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Thursday</td>
+                                    <td class="text-center text-dark">1470</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Friday</td>
+                                    <td class="text-center text-dark">1594</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Saturday</td>
+                                    <td class="text-center text-dark">1366</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-dark">Sundays</td>
+                                    <td class="text-center text-dark">1113</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="w-60">
+                            <div class="chart-container position-relative w-100 h-100">
+                                <canvas id="weeklyChart" style="min-height: 369px;max-height: 360px"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Calls/Hour
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <div class="table-responsive dragscroll w-47">
+
+                                    <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                    <tr class="text-center font-sm">
+                                        <th scope="col">Jan</th>
+                                        <th scope="col">Feb</th>
+                                        <th scope="col">Mar</th>
+                                        <th scope="col">Apr</th>
+                                        <th scope="col">May</th>
+                                        <th scope="col">Jun</th>
+                                        <th scope="col">Jul</th>
+                                        <th scope="col">Aug</th>
+                                        <th scope="col">Sep</th>
+                                        <th scope="col">Oct</th>
+                                        <th scope="col">Nov</th>
+                                        <th scope="col">Dec</th>
+                                    </tr>
+                                    </thead>
+
+                                        <tbody>
+                                    <tr>
+                                        <td class="text-center text-dark">09:00:00</td>
+                                        <td class="text-center text-dark">
+                                            85
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            85
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            71
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            94
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            97
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">10:00:00</td>
+                                        <td class="text-center text-dark">
+                                            146
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            131
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            94
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            105
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            112
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">11:00:00</td>
+                                        <td class="text-center text-dark">
+                                            162
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            151
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            98
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            116
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            118
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">12:00:00</td>
+                                        <td class="text-center text-dark">
+                                            162
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            158
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            100
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            122
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            118
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">13:00:00</td>
+                                        <td class="text-center text-dark">
+                                            165
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            163
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            93
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            110
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            114
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">14:00:00</td>
+                                        <td class="text-center text-dark">
+                                            169
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            157
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            89
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            114
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            107
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">15:00:00</td>
+                                        <td class="text-center text-dark">
+                                            162
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            170
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            90
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            119
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            102
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">16:00:00</td>
+                                        <td class="text-center text-dark">
+                                            148
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            151
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            88
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            115
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            108
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">17:00:00</td>
+                                        <td class="text-center text-dark">
+                                            146
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            142
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            93
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            104
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            111
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">18:00:00</td>
+                                        <td class="text-center text-dark">
+                                            140
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            133
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            94
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            96
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            100
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">19:00:00</td>
+                                        <td class="text-center text-dark">
+                                            125
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            137
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            89
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            89
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            99
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">20:00:00</td>
+                                        <td class="text-center text-dark">
+                                            117
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            118
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            88
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            95
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            124
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">21:00:00</td>
+                                        <td class="text-center text-dark">
+                                            110
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            110
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            70
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            80
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            96
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">22:00:00</td>
+                                        <td class="text-center text-dark">
+                                            65
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            69
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            36
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            42
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            54
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">23:00:00</td>
+                                        <td class="text-center text-dark">
+                                            25
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            24
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            13
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            13
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            19
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                            <div class="table-responsive dragscroll w-47">
+                                <div class="table-heading text-center pb-2">
+                                    <h6 class="font-weight-bold">Abandonment rate</h6>
+                                </div>
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                    <tr class="text-center font-sm">
+                                        <th scope="col">დრო</th>
+                                        <th scope="col">Jan</th>
+                                        <th scope="col">Feb</th>
+                                        <th scope="col">Mar</th>
+                                        <th scope="col">Apr</th>
+                                        <th scope="col">May</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center text-dark">09:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            11
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            10
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">10:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            1
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">11:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            4
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            4
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">12:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            10
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            14
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            4
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">13:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            15
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            17
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            11
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">14:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            13
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            15
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            13
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">15:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            16
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            19
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">16:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">17:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">18:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">19:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">20:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            6
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            2
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            11
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">21:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            13
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            4
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            1
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">22:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            12
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            3
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            4
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">23:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            0
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            0
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            0
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            5
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive dragscroll w-47">
+                                <div class="table-heading text-center pb-2">
+                                    <h6 class="font-weight-bold">Answered calls</h6>
+                                </div>
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                    <tr class="text-center font-sm">
+                                        <th scope="col">დრო</th>
+                                        <th scope="col">Jan</th>
+                                        <th scope="col">Feb</th>
+                                        <th scope="col">Mar</th>
+                                        <th scope="col">Apr</th>
+                                        <th scope="col">May</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center text-dark">09:00:00</td>
+                                        <td class="text-center text-dark">
+                                            77
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            76
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            67
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            85
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            90
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">10:00:00</td>
+                                        <td class="text-center text-dark">
+                                            142
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            125
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            92
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            104
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            109
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">11:00:00</td>
+                                        <td class="text-center text-dark">
+                                            157
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            145
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            96
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            112
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            113
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">12:00:00</td>
+                                        <td class="text-center text-dark">
+                                            145
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            136
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            96
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            111
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            109
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">13:00:00</td>
+                                        <td class="text-center text-dark">
+                                            140
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            136
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            90
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            103
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            101
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">14:00:00</td>
+                                        <td class="text-center text-dark">
+                                            147
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            133
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            87
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            99
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            100
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">15:00:00</td>
+                                        <td class="text-center text-dark">
+                                            136
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            137
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            87
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            109
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            95
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">16:00:00</td>
+                                        <td class="text-center text-dark">
+                                            136
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            140
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            86
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            113
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            103
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">17:00:00</td>
+                                        <td class="text-center text-dark">
+                                            136
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            132
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            90
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            98
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            106
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">18:00:00</td>
+                                        <td class="text-center text-dark">
+                                            131
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            127
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            92
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            89
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            95
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">19:00:00</td>
+                                        <td class="text-center text-dark">
+                                            117
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            124
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            87
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            86
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            94
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">20:00:00</td>
+                                        <td class="text-center text-dark">
+                                            109
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            111
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            86
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            93
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            110
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">21:00:00</td>
+                                        <td class="text-center text-dark">
+                                            102
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            96
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            67
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            79
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            93
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">22:00:00</td>
+                                        <td class="text-center text-dark">
+                                            62
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            61
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            35
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            39
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            52
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">23:00:00</td>
+                                        <td class="text-center text-dark">
+                                            25
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            24
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            12
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            13
+                                        </td>
+                                        <td class="text-center text-dark">
+                                            18
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-responsive dragscroll w-47">
+                                <div class="table-heading text-center pb-2">
+                                    <h6 class="font-weight-bold">Response time</h6>
+                                </div>
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                    <tr class="text-center font-sm">
+                                        <th scope="col">დრო</th>
+                                        <th scope="col">Jan</th>
+                                        <th scope="col">Feb</th>
+                                        <th scope="col">Mar</th>
+                                        <th scope="col">Apr</th>
+                                        <th scope="col">May</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center text-dark">09:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            18
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            20
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            17
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            16
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">10:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            13
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">11:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            13
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            16
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">12:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            26
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            35
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            27
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            14
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">13:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            37
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            45
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            11
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            17
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            18
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">14:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            37
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            35
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            27
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            11
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">15:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            43
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            50
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            11
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            26
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            11
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">16:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            23
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            24
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">17:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            19
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            18
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            12
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">18:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            20
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            16
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            21
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">19:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            19
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            24
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">20:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            20
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            16
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            19
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">21:00:00</td>
+                                        <td class="text-center  text-danger">
+                                            30
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            40
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">22:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            20
+                                        </td>
+                                        <td class="text-center  text-danger">
+                                            43
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            11
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            12
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center text-dark">23:00:00</td>
+                                        <td class="text-center  text-dark">
+                                            10
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            9
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            7
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                        <td class="text-center  text-dark">
+                                            8
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+

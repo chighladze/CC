@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block traceroute %}
+<div class="app-body">
+    <main class="main pt-4 pb-5">
+        <div class="container-fluid">
+            <div class="card border-secondary">
+                <div class="card-header header-flex">
+                    <div class="network-tool" id="traceroute">
+                        <h1>Traceroute</h1>
+                        <form action="{% url 'traceroute' %}" method="get">
+                            <label for="">Enter Ip Address:</label>
+                            <input name="q">
+                            <button class="btn btn-primary" type="submit">Traceroute</button>
+                        </form>
+                        <div class="tool-output">{{ ping_output|linebreaks }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

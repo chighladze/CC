@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block ping %}
+<div class="app-body">
+    <main class="main pt-4 pb-5">
+        <div class="container-fluid">
+            <div class="card border-secondary">
+                <div class="card-header header-flex">
+                    <div class="network-tool" id="ping">
+                        <h1>Ping</h1>
+                        <form action="{% url 'ping' %}" method="get">
+                            <label for="">Enter Ip Address:</label>
+                            <input name="q">
+                            <button class="btn btn-primary" type="submit">Ping</button>
+                        </form>
+                        <div class="tool-output">{{ ping_output|linebreaks }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
